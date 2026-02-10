@@ -161,6 +161,45 @@ async def create_bookmark(
     # 3. RETURN
     return {"status": "queued", "message": "Bookmark saved to persistent queue"}
 
+@app.api_route("/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"])
+async def proxy_request(request: Request, path: str):
+    """
+    Catch-all proxy for everything else (Auth, other APIs).
+    """
+    target_url = f"{KARAKEEP_URL}/{path}"
+    if request.url.query:
+        target_url += f"?{request.url.query}"
+        
+    logger.info(f"Proxying {request.method} {path} to {target_url}")
+    
+    # Exclude host header to avoid confusion at target
+    headers = dict(request.headers)
+    headers.pop("host", None)
+    headers.pop("content-length", None) # Let httpx handle this
+    
+    try:
+        content = await request.body()
+        
+        req = client.build_request(
+            request.method,
+            target_url,
+            headers=headers,
+            content=content
+        )
+        
+        response = await client.send(req, stream=True)
+        
+        return Response(
+            content=response.read(),
+            status_code=response.status_code,
+            headers=dict(response.headers),
+            media_type=response.headers.get("content-type")
+        )
+            
+    except Exception as e:
+        logger.error(f"Proxy failed: {e}")
+        raise HTTPException(status_code=502, detail="Bad Gateway")
+
 @app.on_event("shutdown")
 async def shutdown_event():
     await client.aclose()
