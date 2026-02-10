@@ -10,3 +10,4 @@ verification_retry.log
 verification_retry_2.log
 *.log
 venv/
+queue.db
