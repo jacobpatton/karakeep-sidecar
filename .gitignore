@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.env
+.DS_Store
+sidecar/queue.db
+verification.log
+verification_persist.log
+verification_persist_2.log
+verification_retry.log
+verification_retry_2.log
+*.log
+venv/

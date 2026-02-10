@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  sidecar:
+    build: ./sidecar
+    container_name: karakeep-sidecar
+    environment:
+      - KARAKEEP_URL=http://192.168.1.169:3000 # Updated to user's local IP
+      - KARAKEEP_API_KEY=${KARAKEEP_API_KEY}
+      - SIDECAR_API_KEY=${SIDECAR_API_KEY}
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
