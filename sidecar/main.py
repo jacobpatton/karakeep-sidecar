@@ -18,7 +18,9 @@ app = FastAPI()
 KARAKEEP_URL = os.getenv("KARAKEEP_URL", "http://web:3000") 
 KARAKEEP_API_KEY = os.getenv("KARAKEEP_API_KEY")
 SIDECAR_API_KEY = os.getenv("SIDECAR_API_KEY") 
-DB_PATH = "queue.db"
+SIDECAR_API_KEY = os.getenv("SIDECAR_API_KEY") 
+DB_PATH = "data/queue.db"
+os.makedirs("data", exist_ok=True)
 
 if not KARAKEEP_API_KEY:
     logger.warning("KARAKEEP_API_KEY is not set. Forwarding will fail.")

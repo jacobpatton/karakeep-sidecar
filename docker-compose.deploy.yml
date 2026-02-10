@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  sidecar:
+    image: ghcr.io/jacobpatton/karakeep-sidecar:latest
+    container_name: karakeep-sidecar
+    environment:
+      - KARAKEEP_URL=${KARAKEEP_URL:-http://host.docker.internal:3000}
+      - KARAKEEP_API_KEY=${KARAKEEP_API_KEY}
+      - SIDECAR_API_KEY=${SIDECAR_API_KEY}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data # Mount a volume to persist the SQLite queue
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
