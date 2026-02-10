@@ -187,10 +187,10 @@ async def proxy_request(request: Request, path: str):
             content=content
         )
         
-        response = await client.send(req, stream=True)
+        response = await client.send(req)
         
         return Response(
-            content=response.read(),
+            content=response.content,
             status_code=response.status_code,
             headers=dict(response.headers),
             media_type=response.headers.get("content-type")
